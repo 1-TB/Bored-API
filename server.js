@@ -20,9 +20,6 @@ app.use(function(req, res, next) {
 	next();
 });
 
-app.get('/favicon.ico', (req, res) => {
-	res.sendFile(`${__dirname}/static/favicon.ico`);
-});
 
 // Backend API routes
 app.use(require('./src/backend/routes')());
@@ -37,14 +34,6 @@ app.use((err, req, res, next) => {
 	next();
 });
 
-// Frontend endpoints
-app.use(express.static(__dirname + '/dist'));
-app.use('/', express.static(__dirname + '/dist'));
-
-// Catch all for frontend routes
-app.all('/*', function(req, res) {
-	res.sendFile(path.join(__dirname, '/dist', '/index.html'));
-});
 
 const PORT = process.env.PORT || config.port;
 app.listen(PORT);
