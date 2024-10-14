@@ -1,6 +1,9 @@
 {
   "name": "boredapi",
   "version": "1.1.0",
+  "engines": {
+    "node": "22.9.0"
+  },
   "description": "A simple and free API to find things to do when you're bored",
   "scripts": {
     "build-dev": "npm run clean; webpack  --inline --progress --color --config build/webpack.dev.conf.js",
