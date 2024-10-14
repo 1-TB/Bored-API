@@ -4,10 +4,10 @@ const {unmaskActivity, maskActivity} = require('@b/routes/v1/masks');
 
 module.exports = function(router) {
 	router.get(['/api/activity/', '/api/v1/activity/'], (req, res) => {
-		logQuery('activity', req.query);
+		//logQuery('activity', req.query);
 
 		// Transform query data to be used on database
-		req.query = unmaskActivity(req.query);
+		//req.query = unmaskActivity(req.query);
 
 		// Aggregate the mins and maxes
 		const ranges = ['price', 'participants', 'availability']

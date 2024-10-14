@@ -4,7 +4,6 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var chalk = require('chalk');
-var config = require('./config');
 
 require('dotenv').config();
 
@@ -35,19 +34,22 @@ app.use((err, req, res, next) => {
 });
 
 
-const PORT = process.env.PORT || config.port;
-app.listen(PORT);
+const PORT = process.env.PORT || 8080;
 
-console.log(chalk.green('Started on port ' + PORT));
+// Connect to MongoDB
+const DATABASE = process.env.MONGODB_URI;
 
-//  Connect to MongoDB
-const DATABASE = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URI : config.database;
-
-mongoose.Promise = global.Promise;
-mongoose.connect(DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
-	.then(res => {
+mongoose.connect(DATABASE)
+	.then(() => {
 		console.log(chalk.green('Connected to MongoDB: ' + DATABASE));
-	}).catch(err => {
+		console.log(`Current database name: ${mongoose.connection.name}`);
+
+		// Start the server after successful database connection
+		app.listen(PORT, () => {
+			console.log(chalk.green('Server started on port ' + PORT));
+		});
+	})
+	.catch(err => {
 		console.log(chalk.red('Error connecting to MongoDB: ' + err));
-	}
-);
+		process.exit(1);
+	});

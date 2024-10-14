@@ -1,32 +1,49 @@
 /*
  * overwriteDBCollection.js
- * Overwrites a collection from your mLab instance\
+ * Overwrites a collection in your MongoDB Atlas instance
  *
  * node overwriteDBCollection.js <collection> <input>
  *
- * @arg		collection	The name of the collection to be retrieved
- * @arg     input		The JSON to be used to overwite the collection
+ * @arg    collection The name of the collection to be overwritten
+ * @arg    input      The JSON file to be used to overwrite the collection
  */
 
 require('module-alias/register');
-const chalk = require('chalk')
+const chalk = require('chalk');
+const { exec } = require('child_process');
+const util = require('util');
+const execPromise = util.promisify(exec);
+
+// Assuming you've updated your utils.js to export these correctly
 const {
-	exec,
-	MONGODB_HOST,
-	MONGODB_DB,
-	MONGODB_USERNAME,
-	MONGODB_PASSWORD
+	MONGODB_URI,
+	MONGODB_DB
 } = require('@s/utils');
 
 if (process.argv.length < 4) {
-	console.log(chalk.red('Invalid format: Missing necessary arguments'))
-	return;
-};
+	console.log(chalk.red('Invalid format: Missing necessary arguments'));
+	process.exit(1);
+}
 
-exec(`mongoimport -h ${MONGODB_HOST} -d ${MONGODB_DB} -c ${process.argv[2]} -u ${MONGODB_USERNAME} -p ${MONGODB_PASSWORD} --file ${process.argv[3]} --drop`).then((stdout, stderr) => {
-	if (stderr && stderr !== '') throw new Error(stderr);
+const collection = process.argv[2];
+const inputFile = process.argv[3];
 
-	console.log(chalk.green(`Successfully overwrote collection`));
-}).catch(err => {
-	console.log(chalk.red(err));
-});
+async function overwriteCollection() {
+	try {
+		const command = `mongoimport "${MONGODB_URI}" --db ${MONGODB_DB} --collection ${collection} --file ${inputFile} --drop`;
+
+		const { stdout, stderr } = await execPromise(command);
+
+		if (stderr && stderr !== '') {
+			throw new Error(stderr);
+		}
+
+		console.log(chalk.green(`Successfully overwrote collection ${collection}`));
+		console.log(stdout);
+	} catch (err) {
+		console.log(chalk.red('Error occurred:'));
+		console.error(err);
+	}
+}
+
+overwriteCollection();

@@ -11,15 +11,15 @@ const activitySchema = new mongoose.Schema({
 		enum: ['charity', 'cooking', 'music', 'diy', 'education', 'social', 'busywork', 'recreational', 'relaxation'],
 		required: true
 	},
-	participants: { // 1 - n
+	participants: {
 		type: Number,
 		required: true
 	},
-	price: { // 0.0 - 1.0
+	price: {
 		type: Number,
 		required: true
 	},
-	availability: { // 0.0 - 1.0
+	availability: {
 		type: Number,
 		required: true
 	},
@@ -30,15 +30,13 @@ const activitySchema = new mongoose.Schema({
 	duration: {
 		type: String,
 		enum: ['minutes', 'hours', 'days', 'weeks'],
-		default: 'minutes',
 		required: true
 	},
 	kidFriendly: {
 		type: Boolean,
-		default: false,
 		required: true
 	},
-	link: { // URL to resource
+	link: {
 		type: String
 	},
 	key: {
